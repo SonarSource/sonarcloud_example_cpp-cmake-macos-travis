@@ -1,0 +1,25 @@
+os: osx
+sudo: false
+
+addons:
+  sonarcloud:
+    organization: "sonarcloud"
+    token:
+      secure: "hR1nODp2KBRQegnK9JzHSTUuhvm/DGm2Yil8a1wQHO+yxbKjnCm4Mh430W3FgY1It3LuRHYa0yIlWMQK9sfENAmy3SaCDMDUn8PLAYOxExQu/QEdCo7f1D426YANfeZWgpaAsyc9GJqzyS4Pg+2n6NqvkT4yAIV+uOBdEnyWeBPF3h2yphDOLTNYVpsPck3pk/1Y+/q0Iu9zJDMngyUmMf9E+zm+eqXZIRIMkk9DSFiSJcABlTOJlclnjKhePPXZAEGWHbrZcciZV99Tep1hRA0hNFu6CyNO6govzThbiTEe6kmNNQ11vVXmrsxZSlCh6FvbEfcSlo7fcuD7rABNS8fa6bWfE5dtv/tT88IQ6zr/H43NK0xrL22h3hYH/F6S9BqFPn0rpTUF6bxG7OllmTlG5wvl6gCGAOhc1sxyvcTRtNdqK2EhJfGOUHSHMn9OC98YsaAHzgIIrcC/zAVDCaGB3L1a3i4YqSjQdXPh24pTi5FR3dWj3ri7OoYF3XHtgcw/GEhslFqo/KzQcHx7UcJ7p06gW58TDL7gRieQQ4QJMID57P/rmWjq7oz84E/p90f359YJn3Uq8B4gBby+Hyg1nyrIzVfz9/bp8aNY5In1zNIab1iDfD0Io3JdcIEaQae1/lvhkcIFwn7pvrzCYwSA5Si+l7E5lEaW0qsIe0U="
+
+script:
+  # Prepare the build system
+  - mkdir build
+  - cd build
+  - cmake ..
+  - cd ..
+  # Wraps the compilation with the Build Wrapper to generate configuration (used
+  # later by the SonarQube Scanner) into the "bw-output" folder
+  - build-wrapper-macosx-x86 --out-dir bw-output cmake --build build/
+  # And finally run the SonarQube analysis - read the "sonar-project.properties"
+  # file to see the specific configuration
+  - sonar-scanner
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
